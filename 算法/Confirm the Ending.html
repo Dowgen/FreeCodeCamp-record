@@ -1,0 +1,25 @@
+//检查一个字符串(str)是否以指定的字符串(target)结尾。
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm the Ending</title>
+    <script type="text/javascript">
+        function confirmEnding(str, target) {
+            var end = str.substr(-(target.length));
+            if(end == target){
+                return true;
+            }else{
+                return false;
+            }
+
+        }
+        
+        alert(confirmEnding("Bastian is a god", "god"));
+    </script>
+</head>
+<body>
+    
+</body>
+
+</html>
