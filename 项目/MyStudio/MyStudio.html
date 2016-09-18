@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>东根工作室</title>
+    <style type="text/css">
+
+        *{ box-sizing: border-box;text-align:center;}
+
+        body,html { width: 100%; height: 100%;}
+
+        body,h1,h2, h3, h4,h5,h6 {
+            font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-weight: 700;
+        }
+
+        #topnav{
+            width: 100%;
+            background: #63BBB3;
+            font-size: 16px;
+            position: fixed;
+            top:0;
+        }
+        #nav{
+            padding-left: 0;
+            list-style:none;
+            background-color: #000000;
+            margin:0;
+            margin-left:10%;
+        }
+        #nav li{
+            float:left;
+            position: relative;
+            display: block;
+        }
+        #nav a{
+            position: relative;
+            top:0;
+            color:white;
+            text-decoration:none;
+            display: block;
+            padding: 15px 15px;
+            line-height: 15px;
+        }
+        #topnav #nav a:hover
+         {
+            background: rgba(255, 255, 255, 0.5);
+            color: blue;
+        }
+        #part1 {
+            background: url('part1.jpg') no-repeat center fixed;
+        }
+        #part2 {
+            background: url('part2.jpeg') no-repeat center fixed;
+        }
+        #part3 {
+            background: url('part3.jpeg') no-repeat center fixed;
+        }
+        #part4 {
+            background: url('part4.jpg') no-repeat center fixed;
+        }
+        #part1,#part2,#part3,#part4{
+            background-size: cover;
+            height: 950px;
+            overflow:hidden;
+        }
+        #part1Content{
+            float: left;
+            position: relative;
+            margin-top:10%;
+            left:50%;             
+        }
+        .btitle,.myhomepages,hr{
+            position: relative;
+            left: -50%;
+        }
+        .btitle{
+            font-weight: bold;
+            font-style:oblique;
+            font-size: 5.5em;
+            color:white;
+        }
+        .myhomepages ul{
+            list-style:none;
+            background-color: #000000;
+            margin:0;
+        }
+        .myhomepages li{
+            float:left;
+            position: relative;
+            display: block;
+            margin: 10px;
+        }
+        .myhomepages .btn{
+            font-size:1.8em;
+            border-radius:0.5em;
+            padding:10px;
+        }
+        .myhomepages .btn:hover
+         {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        #part2 img{
+            border: 1px outset;
+            border-radius: 50%;
+        }
+        #ip{
+            margin-top: 10%;
+        }
+
+        #introduce{
+            float: left;
+            margin-left:15%;
+            color:#EBFED2;
+        }
+        #introtitle{
+            font-size:3em;
+        }
+        #introcontent{
+            font-size:1.5em;
+        }
+        #ip img{
+            position: absolute;
+            padding:100px;
+        }
+        
+        #module{
+            float: left;
+            position:relative;
+            top:10%;
+            left: 50%;
+        }
+        #module #mtitle{
+            font-weight: bold;
+            font-style:oblique;
+            font-size: 5.5em;
+            color:#74B5E7;
+        }
+        #module h1,#mdup,#mddown{
+            position: relative;
+            left: -50%;
+        }
+        .md{
+            display: inline-block;
+            width:200px;
+            height: 200px;
+            border: 2px solid #74B5E7;
+        }
+        .xiangmu{
+            font-size:3em;
+            color:white;
+            float:right;
+        }
+        
+
+        .container{
+            width: 100%;
+            overflow:hidden;
+            background-color: rgba(192, 192, 192, 0.9);
+        }
+
+
+        .container li{
+            display: inline-block;
+            margin:10px;
+            color: rgb(51, 122, 183);   
+        }
+        .container p{
+            color: #777;
+            font-size:85%;
+        }
+
+        #part4 p{
+            font-weight: bold;
+            font-style:oblique;
+            font-size: 3.5em;
+            color: white;
+            margin-top:15%;
+        }
+        #part4 li{
+            display: inline-block;
+        }
+        #part4 .btn{
+            font-size:2em;
+            border-radius:0.2em;
+            padding:10px;
+            margin:20px;
+        }
+        #part4 .btn:hover
+         {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="topnav">
+        
+        <ul id="nav">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        
+    </div>
+
+    <a name="home"></a>
+    <div id="part1">
+        <div id="part1Content">
+        <h2 class="btitle">东根工作室</h2>
+        <hr>
+        <ul class="myhomepages">
+            <li>
+                <a href="#" target="_blank"><button class="btn">Twitter</button></a>
+            </li>
+            <li>
+                <a href="https://github.com/Dowgen" target="_blank"><button class="btn">Github</button></a>
+            </li>
+            <li>
+                <a href="#" target="_blank"><button class="btn">Linkedin</button></a>
+            </li>
+            <li>
+                <a href="https://www.freecodecamp.cn/dowgen" target="_blank"><button class="btn">freeCodeCamp</button></a>
+            </li>
+        </ul>
+        </div>
+    </div>
+
+
+    <a name="about"></a>
+    <div id="part2">
+        <div id="ip">
+            <div id="introduce">
+                <h2 id="introtitle">独白</h2>
+                <br>
+
+                <p id="introcontent">该不该搁下重重的壳<br>
+                                    寻找到底哪里有蓝天<br>
+                                    随着轻轻的风轻轻地飘<br>
+                                    历经的伤都不感觉疼<br>
+                                    我要一步一步往上爬<br>
+                                    等待阳光静静看着它的脸<br>
+                                    小小的天有大大的梦想<br>
+                                    重重的壳裹着轻轻地仰望<br>
+                                    我要一步一步往上爬<br>
+                                    在最高点乘着叶片往前飞<br>
+                                    小小的天流过的泪和汗<br>
+                                    总有一天我有属于我的天<br>
+                </p>
+            </div>
+            <img src="kangaroo.jpg">
+        </div>
+        
+    </div>
+
+
+    <a name="portfolio"></a>
+
+    <div id="part3">
+        <div id="module">
+            <h1 id="mtitle">我做过的项目</h1>
+            <div id="mdup">
+                <div id="md1"class="md">  
+                    <h1 class="xiangmu">空缺</h1>
+
+                </div>
+
+                <div id="md2"class="md">
+                    <h1 class="xiangmu">空缺</h1>
+
+                </div>
+
+                <div id="md3"class="md">
+                    <h1 class="xiangmu">空缺</h1>
+
+                </div>
+                    
+            </div>
+
+            <div id="mddown">
+
+                <div id="md4"class="md">
+                    <h1 class="xiangmu">空缺</h1>
+                    
+
+                </div>
+
+                <div id="md5"class="md">
+                    <h1 class="xiangmu">空缺</h1>
+                    
+
+                </div>
+
+                <div id="md6"class="md">
+                    <h1 class="xiangmu">空缺</h1>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <a  name="contact"></a>
+    <div id="part4">
+        <p>Connect with Dongen Studio: fullstack.xwb@foxmail.com</p>
+
+        <div>
+            <ul>
+                <li>
+                <a href="#" target="_blank"><button class="btn">Twitter</button></a>
+            </li>
+            <li>
+                <a href="https://github.com/Dowgen" target="_blank"><button class="btn">Github</button></a>
+            </li>
+            <li>
+                <a href="#" target="_blank"><button class="btn">Linkedin</button></a>
+            </li>
+            <li>
+                <a href="https://www.freecodecamp.cn/dowgen" target="_blank"><button class="btn">freeCodeCamp</button></a>
+            </li>
+            </ul>
+        </div>
+
+        
+
+    </div>
+
+    <footer>
+    
+        <div class="container">
+            
+            <ul class="">
+                <li><a href="#">Home</a></li>
+                
+                <li><a href="#about">About</a></li>
+                
+                <li><a href="#portfolio">Portfolio</a></li>
+                
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <p class="">Copyright &copy; Dongen 2016. All Rights Reserved</p>
+                
+        </div>
+    </footer>
+
+</body>
+</html>
