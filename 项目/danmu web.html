@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>danmu web</title>
+    <script src="jquery-3.1.1.js"></script>
+    <style type="text/css">
+        #wall{
+            margin:auto 40px;
+            height: 300px;
+            border: 2px solid;
+            box-shadow: 4px 4px 2px #888888;
+        }
+        #in{
+            display: block;
+            width: 400px;
+            margin:15px auto;
+            line-height: 50px;
+        }
+        #btns{
+            width: 400px;
+            margin:auto;
+        }
+        ul{
+            width: 100%;
+            margin:auto;
+            margin-left:3%;
+        }
+        li{
+            display: inline-block;
+            margin:0 10px;
+        }
+        button{
+            font-size:18px;
+            padding:10px 40px;
+            border-style: none;
+            background-color: #B5DAAB;
+        }
+        .danmu{
+            animation: roll 15s;
+        }
+        @keyframes roll{
+            0%{color:red;margin-left: 100%;}
+            99%{color:black;margin-left:0;}
+            100%{display:none;}
+        }
+    </style>
+</head>
+<body>
+
+    <div id="wall"></div>
+    <input type="text"name="dm"id="in"></input>
+
+    <div id="btns">
+        <ul>
+            <li><button id="shoot" onclick="Shoot()">Shoot</button></li>
+            <li><button id="Clear" onclick="Clear()">Clear</button></li>
+        </ul>
+    </div>
+
+    <script>
+        var wall = document.getElementById('wall'); //弹幕墙设置为公共变量，避免多余DOM操作
+
+        function Shoot(){
+            var time = 5;  //设置弹幕消失时间
+            var val = document.getElementById('in');
+            var danmu = document.createElement('p');
+            val = document.createTextNode(val.value);
+            danmu.appendChild(val);
+            danmu.setAttribute("class","danmu"); //设置弹幕的class为.danmu
+            wall.appendChild(danmu);
+
+            $(".danmu").fadeOut(18000);
+
+        }
+        function Clear(){
+            var danmu = document.getElementsByClassName('danmu');
+            
+            while(danmu[0]){            //当弹幕存在
+                wall.removeChild(danmu[0]);
+            }
+        }
+
+    </script>
+</body>
+</html>
