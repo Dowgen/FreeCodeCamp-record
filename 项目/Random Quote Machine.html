@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Quote Machine</title>
+    <style type="text/css">
+        *{
+            text-align: center;
+        }
+        body{
+            background-color: #80C2BA;
+        }
+        #main{
+            position:relative;
+            background:white;
+            padding:30px 20px;
+            margin:auto;
+            top:100px;
+            width: 550px;
+            height: 250px;
+        }
+        .a{
+            position: absolute;
+            color: #80C2BA;
+            font-size:1.8em;
+        }
+        Quote{
+            color: #80C2BA;
+            font-size:1.2em;
+            position: absolute;
+            right:5%;
+            bottom: 30%;
+        }
+        button{
+            background-color: #80C2BA;
+            color: white;
+            position: absolute;
+            height: 38px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1em;
+        }
+        #twitter{
+            left:40px;
+            bottom: 30px;
+            width: 60px;
+        }
+        #tumblr{
+            left:120px;
+            bottom: 30px;
+            width:60px;
+        }
+        #clk{
+            right: 20px;
+            bottom:30px;
+            width: 100px;
+        }
+        button:hover{
+            background-color: #888888;
+        }
+        #by{
+            position: absolute;
+            top:450px;
+            color:white;
+            font-size:1.1em;
+        }
+        #q2,#q3,#q4{
+            display:none;
+        }
+    </style>
+</head>
+<body id="b">
+    <div id="main">
+
+        <div id="q1">
+            <p class="a"><strong>"</strong>聚光灯呢,看这里</p>
+            <Quote>- 风暴之灵</Quote>
+        </div>
+
+        <div id="q2">
+            <p class="a"><strong>"</strong>与其感慨路难行，不如马上出发</p>
+            <Quote>- 克林克兹</Quote>
+        </div>
+
+        <div id="q3">
+            <p class="a"><strong>"</strong>大喵，说多谢！</p>
+            <Quote>- 米拉娜</Quote>
+        </div>
+
+        <div id="q4">
+            <p class="a"><strong>"</strong>读书人的事能叫偷吗，这是借~</p>
+            <Quote>- 拉比克</Quote>
+        </div>
+        <button id="twitter">Twitter</button>
+        <button id="tumblr">Tumblr</button>
+        <button id="clk" onclick="Change()">Change</button>
+    </div>
+    <p id="by">by DG</p>
+
+    <script type="text/javascript">
+
+        var q1 = document.getElementById("q1");
+        var q2 = document.getElementById("q2");
+        var q3 = document.getElementById("q3");
+        var q4 = document.getElementById("q4");
+        var body = document.getElementsByTagName("body");
+        var a = document.getElementsByClassName("a");
+        var qt = document.getElementsByTagName("Quote");
+        var btn = document.getElementsByTagName("button");
+
+        function Change(){
+
+            var num = (Math.random()+0.00001)*4;  //获得随机数，决定显示那个引言
+            num = Math.ceil(num);
+
+            switch(num){
+                case 1: q1.style.display = "block";
+                        q2.style.display ="none";
+                        q3.style.display ="none";
+                        q4.style.display ="none";
+                        body[0].style.backgroundColor = "#80C2BA";
+                        a[0].style.color = "#80C2BA";
+                        qt[0].style.color = "#80C2BA";
+                        btn[0].style.backgroundColor="#80C2BA";
+                        btn[1].style.backgroundColor="#80C2BA";
+                        btn[2].style.backgroundColor="#80C2BA";
+                        break;
+                case 2: q1.style.display = "none";
+                        q2.style.display ="block";
+                        q3.style.display ="none";
+                        q4.style.display ="none";
+                        body[0].style.backgroundColor = "#D4837A";
+                        a[1].style.color = "#D4837A";
+                        qt[1].style.color = "#D4837A";
+                        btn[0].style.backgroundColor="#D4837A";
+                        btn[1].style.backgroundColor="#D4837A";
+                        btn[2].style.backgroundColor="#D4837A";
+                        break;
+                case 3: q1.style.display = "none";
+                        q2.style.display ="none";
+                        q3.style.display ="block";
+                        q4.style.display ="none";
+                        body[0].style.backgroundColor = "#D1C086";
+                        a[2].style.color = "#D1C086";
+                        qt[2].style.color = "#D1C086";
+                        btn[0].style.backgroundColor="#D1C086";
+                        btn[1].style.backgroundColor="#D1C086";
+                        btn[2].style.backgroundColor="#D1C086";
+                        break;
+                case 4: q1.style.display = "none";
+                        q2.style.display ="none";
+                        q3.style.display ="none";
+                        q4.style.display ="block";
+                        body[0].style.backgroundColor = "#8074BD";
+                        a[3].style.color = "#8074BD";
+                        qt[3].style.color = "#8074BD";
+                        btn[0].style.backgroundColor="#8074BD";
+                        btn[1].style.backgroundColor="#8074BD";
+                        btn[2].style.backgroundColor="#8074BD";
+                        break;
+
+            }
+        }
+
+
+    </script>
+</body>
+</html>
