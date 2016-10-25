@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Random Quote Machine</title>
+    <script type="text/javascript" src="jquery-3.1.1.js"></script>
     <style type="text/css">
         *{
             text-align: center;
@@ -9,21 +10,22 @@
         body{
             background-color: #80C2BA;
         }
+        a{ text-decoration:none;color: white;}
         #main{
             position:relative;
             background:white;
             padding:30px 20px;
             margin:auto;
             top:40%;
-            width: 550px;
-            height: 250px;
+            width: 580px;
+            height: 300px;
         }
-        .a{
+        #text{
             position: absolute;
             color: #80C2BA;
             font-size:1.8em;
         }
-        Quote{
+        #author{
             color: #80C2BA;
             font-size:1.2em;
             position: absolute;
@@ -39,17 +41,17 @@
             border: none;
             font-size: 1em;
         }
-        #twitter{
+        #weibo{
             left:40px;
             bottom: 30px;
             width: 60px;
         }
-        #tumblr{
+        #douban{
             left:120px;
             bottom: 30px;
             width:60px;
         }
-        #clk{
+        #change{
             right: 20px;
             bottom:30px;
             width: 100px;
@@ -66,99 +68,53 @@
         }
     </style>
 </head>
-<body id="b">
+<body>
     <div id="main">
 
         <div id="q1">
-            <p class="a"><strong>"</strong>聚光灯呢,看这里</p>
-            <Quote>- 风暴之灵</Quote>
+            <p id="text">All for one, one for all. </p>
+            <Quote id="author">- Dumas pére</Quote>
         </div>
 
-        <div id="q2">
-            <p class="a"><strong>"</strong>与其感慨路难行，不如马上出发</p>
-            <Quote>- 克林克兹</Quote>
-        </div>
-
-        <div id="q3">
-            <p class="a"><strong>"</strong>大喵，说多谢！</p>
-            <Quote>- 米拉娜</Quote>
-        </div>
-
-        <div id="q4">
-            <p class="a"><strong>"</strong>读书人的事能叫偷吗，这是借~</p>
-            <Quote>- 拉比克</Quote>
-        </div>
-        <button id="twitter">Twitter</button>
-        <button id="tumblr">Tumblr</button>
-        <button id="clk" onclick="Change()">Change</button>
+        <button id="weibo"><a href="http://service.weibo.com/share/share.php?appkey=&title=&url=&pic=&searchPic=false&style=simple" target="_blank">微博</a></button>
+        <button id="douban"><a href="http://www.douban.com/recommend/?url={url}"target="_blank">豆瓣</a></button>
+        <button id="change">Change</button>
     </div>
     <p id="by">by DG</p>
 
     <script type="text/javascript">
 
-        var q1 = document.getElementById("q1");
-        var q2 = document.getElementById("q2");
-        var q3 = document.getElementById("q3");
-        var q4 = document.getElementById("q4");
-        var body = document.getElementsByTagName("body");
-        var a = document.getElementsByClassName("a");
-        var qt = document.getElementsByTagName("Quote");
-        var btn = document.getElementsByTagName("button");
+        var colors = ['#16a085','#27ae60','#2c3e50','#f39c12','#e74c3c','#9b59b6',
+                      '#FB6964','#342224','#472E32','#BDBB99','#77B1A9','#73A857'];
+       
+        var reQuote = '', reAuthor = '';
 
-        function Change(){
+        function getQuote() {
+            $.ajax({
+                headers: {
+                    'X-Mashape-Key': 'OivH71yd3tmshl9YKzFH7BTzBVRQp1RaKLajsnafgL2aPsfP9V',
+                    Accept: 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                url: 'https://andruxnet-random-famous-quotes.p.mashape.com/cat=',
+                success: function (response) {
+                    var rps = JSON.parse(response);
+                    reQuote = rps.quote;
+                    reAuthor = rps.author;
+                    $('#text').text(rps.quote);
+                    $('#author').html("- "+rps.author);
 
-            var num = (Math.random()+0.00001)*4;  //获得随机数，决定显示那个引言
-            num = Math.ceil(num);
+                    var color = Math.floor(Math.random() * colors.length);
+                    console.info(colors[color]);
 
-            switch(num){
-                case 1: q1.style.display = "block";
-                        q2.style.display ="none";
-                        q3.style.display ="none";
-                        q4.style.display ="none";
-                        body[0].style.backgroundColor = "#80C2BA";
-                        a[0].style.color = "#80C2BA";
-                        qt[0].style.color = "#80C2BA";
-                        btn[0].style.backgroundColor="#80C2BA";
-                        btn[1].style.backgroundColor="#80C2BA";
-                        btn[2].style.backgroundColor="#80C2BA";
-                        break;
-                case 2: q1.style.display = "none";
-                        q2.style.display ="block";
-                        q3.style.display ="none";
-                        q4.style.display ="none";
-                        body[0].style.backgroundColor = "#D4837A";
-                        a[1].style.color = "#D4837A";
-                        qt[1].style.color = "#D4837A";
-                        btn[0].style.backgroundColor="#D4837A";
-                        btn[1].style.backgroundColor="#D4837A";
-                        btn[2].style.backgroundColor="#D4837A";
-                        break;
-                case 3: q1.style.display = "none";
-                        q2.style.display ="none";
-                        q3.style.display ="block";
-                        q4.style.display ="none";
-                        body[0].style.backgroundColor = "#D1C086";
-                        a[2].style.color = "#D1C086";
-                        qt[2].style.color = "#D1C086";
-                        btn[0].style.backgroundColor="#D1C086";
-                        btn[1].style.backgroundColor="#D1C086";
-                        btn[2].style.backgroundColor="#D1C086";
-                        break;
-                case 4: q1.style.display = "none";
-                        q2.style.display ="none";
-                        q3.style.display ="none";
-                        q4.style.display ="block";
-                        body[0].style.backgroundColor = "#8074BD";
-                        a[3].style.color = "#8074BD";
-                        qt[3].style.color = "#8074BD";
-                        btn[0].style.backgroundColor="#8074BD";
-                        btn[1].style.backgroundColor="#8074BD";
-                        btn[2].style.backgroundColor="#8074BD";
-                        break;
-
-            }
+                    $("html body,button").css("backgroundColor",colors[color]);
+                    $('#text').css("color",colors[color]);
+                    $('#author').css("color",colors[color]);
+                }
+            });
         }
 
+        $('#change').on('click', getQuote);
 
     </script>
 </body>
