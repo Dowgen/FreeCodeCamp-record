@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="vue.js"></script>
+    <script type="text/javascript" src="jquery-3.1.1.js"></script>
+    <title>Weather</title>
+
+    <style type="text/css">
+         *{
+            text-align: center;
+            padding:0;
+        }
+        ul{
+            list-style: none;
+        }
+        hr{
+            width: 80%;
+            color:#FFFFFF;
+        }
+        #main, #future{
+            position: relative;
+        }
+        #main li, #future li{
+            margin-top: 10px;
+        }
+        #futureWeather li{
+            display: inline-block;
+            width: 150px;
+            margin-top:20px;
+        }
+
+    </style>
+   
+</head>
+<body>
+    <a href="https://www.juhe.cn">
+    <img src="https://www.juhe.cn/themes/v5/public/images/loginlogo.png" 
+         class="img-responsive"></a>
+    <h1>天气应用</h1>
+    <div id="main">
+    <div>
+        <ul>
+            <li>{{Data.today.city}}</li>
+            <li>{{Data.today.week}}</li>
+            <li>{{Data.today.date_y}}</li>
+        </ul>
+    </div>
+    <hr>
+    <div>
+        <h1>今天天气</h1>
+        <ul>
+            <li>{{Data.today.weather}}</li>
+            <li>{{Data.today.temperature}}</li>
+            <li>湿度：{{Data.sk.humidity}}</li>
+            <li>{{Data.today.wind}}</li>
+        </ul>
+        <ul>
+            <li>穿衣指数：{{Data.today.dressing_index}}</li>
+            <li>洗车指数：{{Data.today.wash_index}}</li>
+            <li>旅行指数：{{Data.today.travel_index}}</li>
+            <li>锻炼指数：{{Data.today.exercise_index}}</li>
+            <li>紫外线指数：{{Data.today.uv_index}}</li>
+        </ul>
+    </div>
+    <hr>
+    </div>
+    <div id="future">
+        <h1>未来天气</h1>
+        <ul id="futureWeather">
+            <li v-for="item in items">
+               {{item.week}}<br>
+               {{item.temperature}}<br>
+               {{item.weather}}<br>
+               {{item.wind}}<br>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript">
+    var vm = new Vue({
+        el:"#main",
+        data:{
+            Data:''
+        }
+    })
+    var vm2 = new Vue({
+        el:"#future",
+        data:{
+            items:[]
+        }
+    })
+
+    var url = 'http://v.juhe.cn/weather/index';  
+    $.ajax(url, {  
+        data: {  
+            'cityname': '杭州',  
+            'dtype': 'json',  
+            'key': 'ea1b0b4b3343eb998f9a81c7f9df87d2',  
+            '_': new Date().getTime()  
+        },  
+        dataType: 'jsonp',  
+        crossDomain: true,  
+        success: function(data) {  
+            if(data && data.resultcode == '200'){  
+                 vm.Data = data.result;
+                 vm2.items = data.result.future;
+            }  
+        }  
+    });  
+</script>
+</html>
