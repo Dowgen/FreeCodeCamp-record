@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="vue.js"></script>
+    <title>Pomodoro Clock</title>
+    <style type="text/css">
+        *{
+            text-align: center;
+            color: white;
+        }
+        body{
+            background-color: black;
+        }
+        #main{
+            position: absolute;
+            margin-left:50%;
+        }
+        #title{
+            font-size:5em;
+        }
+        button,input{
+            background-color:black; 
+            border-style:none;
+            border-radius: .2em;
+            font-size:3em;
+        }
+        input{
+            width: 60px;
+        }
+        span{
+            font-size: 1.7em;
+            margin-right: 20px;
+        }
+        button:hover{
+            color: #EE0000;
+        }
+        canvas:hover{
+            background-color: #ccc;
+            border-radius: 100%;
+        }
+        #circle{
+            margin-top: 100px;
+            border-style: none;
+            /*background: black;*/
+        }
+        #title,#breakL,#sessionL,canvas{
+            margin-left:-100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <h1 id="title">Pomodoro Clock</h1>
+        <div id="breakL">
+            <span>BREAK LENGTH :</span>
+            <button v-on:click="minBreak"> - </button>
+            <input type="text" v-bind:value="breakTime">
+            <button v-on:click="addBreak"> + </button>
+        </div>
+        <div id="sessionL">
+            <span>SESSION LENGTH :</span>
+            <button v-on:click="minSession"> - </button>
+            <input type="text" v-bind:value="sessionTime">
+            <button v-on:click="addSession"> + </button>
+        </div>
+
+        <canvas id="circle" width=500 height=500 v-on:click="start"></canvas>
+
+    </div>
+</body>
+<script type="text/javascript">
+    var vm = new Vue({
+        el:"#main",
+        data:{
+            breakTime:"5",
+            sessionTime:"12",
+            minutes:"12",
+            seconds:"00",
+            end:'',     //计时结束
+            startFlag:true,  //开始标志，false表示停止计时器
+            redrawFlag:false    //重绘标志：当计时结束后，再点一次计时器重绘
+        },
+        methods:{
+            addSession:function(){
+                this.sessionTime++;
+                this.minutes++;
+                this.draw();   //时间改变重绘canvas
+            },
+            minSession:function(){
+                if(this.sessionTime>0){
+                    this.sessionTime--;
+                    this.minutes--;
+                    if(this.minutes < 10){
+                        this.minutes = "0" + this.minutes;
+                    }
+                    this.draw();
+                }
+            },
+            addBreak:function(){
+                this.breakTime++;
+            },
+            minBreak:function(){
+                if(this.breakTime>0){
+                    this.breakTime--;
+                }
+            },
+            draw:function(){
+                /*  绘制闹钟  */
+                var canvas = document.getElementById("circle");
+                var ctx = canvas.getContext("2d");
+                ctx.beginPath(); 
+                ctx.lineWidth = 30;
+                ctx.strokeStyle = "#FF1234"; //边的颜色(底色)
+                ctx.fillStyle = "black";   //填充色(进度条颜色)
+                ctx.arc(250, 250, 200, 0, Math.PI*2, true);
+                ctx.stroke();
+                ctx.fill();
+
+                /* 画字 */
+                ctx.beginPath(); 
+                ctx.fillStyle ="white";
+                ctx.font = "60px lighter";
+                ctx.fillText(this.minutes +":"+ this.seconds,180,270);
+            },
+            //功能：倒计时并绘制
+            countDown:function(){  
+
+                this.seconds = parseInt(this.seconds);
+                this.minutes = parseInt(this.minutes);
+                //如果为0终止计时器并置重绘
+                if(this.minutes == 0 && this.seconds == 1){
+                    clearInterval(this.end);//计时结束
+                    this.redrawFlag = true;     //重绘
+                }
+                if(this.seconds != 0 ){
+                    if(this.seconds <= 10){
+                        this.seconds = "0" + --this.seconds;
+                    }else{
+                        --this.seconds;
+                    }
+                    if(this.minutes < 10){
+                        this.minutes = "0" + this.minutes;
+                    }
+                }else{
+                    if(this.minutes < 10){
+                        this.minutes = "0" + --this.minutes;
+                    }else{
+                        --this.minutes;
+                    }
+                    this.seconds = 59;
+                }
+                this.draw();
+            },
+            //功能：点击开始/暂停
+            start:function(){
+                if(this.startFlag && !this.redrawFlag){
+                    this.end = setInterval(this.countDown,1000);
+                    this.startFlag = false;
+                }else if(!this.startFlag && !this.redrawFlag){
+                    clearInterval(this.end);
+                    this.startFlag = true;
+                }else{
+                    //重置计时器
+                    this.minutes = "12";
+                    this.sessionTime = "12";
+                    this.draw();
+                    this.redrawFlag = false; //重置标志
+                    
+                }
+            }
+        }
+    })
+
+    vm.draw();
+
+</script>
+</html>

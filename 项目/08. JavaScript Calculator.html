@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>temp</title>
+    <style type="text/css">
+        *{
+            text-align: center;
+        }
+        #main{
+            border: solid 2px black;
+            width: 450px;
+            margin:auto;
+        }
+        input{
+            width: 400px;
+            height: 30px;
+        }
+        #btn{
+            width: 400px;
+            height: 400px;
+            margin:50px auto;
+        }
+        button{
+            width: 80px;
+            height: 60px;
+            outline:none;
+            text-decoration: none;
+            font: 14px/100% Arial,Helvetica,sans-serif;
+            padding: .5em 2em .55em;
+            text-shadow: 0 1px 1px rgba(0,0,0,.3);
+            border-radius: .5em;
+            box-shadow: 0 1px 2px rgba(0,0,0.2);
+        }
+        button:hover{
+            text-decoration: none;
+        }
+        button:active{
+            position: relative;
+            top:1px;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <h3>Calculator</h3>
+        <input type="text" id="in" v-bind:value="val">
+        <div id="btn">
+            <button id="clr1"  onclick="clears()"> C </button>
+            <button id="clr2"  onclick="clearss()"> CE </button>
+            <button id="mo"    onclick="show(this.id)" value="%"> % </button>
+            <button id="divi"  onclick="show(this.id)" value="/"> / </button>
+            <button id="7"     onclick="show(this.id)" value="7"> 7 </button>
+            <button id="8"     onclick="show(this.id)" value="8"> 8 </button>
+            <button id="9"     onclick="show(this.id)" value="9"> 9 </button>
+            <button id="mul"   onclick="show(this.id)" value="*"> * </button>
+            <button id="4"     onclick="show(this.id)" value="4"> 4 </button>
+            <button id="5"     onclick="show(this.id)" value="5"> 5 </button>
+            <button id="6"     onclick="show(this.id)" value="6"> 6 </button>
+            <button id="min"   onclick="show(this.id)" value="-"> - </button>
+            <button id="1"     onclick="show(this.id)" value="1"> 1 </button>
+            <button id="2"     onclick="show(this.id)" value="2"> 2 </button>
+            <button id="3"     onclick="show(this.id)" value="3"> 3 </button>
+            <button id="add"   onclick="show(this.id)" value="+"> + </button>
+            <button id="pt"    onclick="show(this.id)" value="."> . </button>
+            <button id="0"     onclick="show(this.id)" value="0"> 0 </button>
+            <button id="ans"   onclick="getAns()"> Ans </button>
+            <button id="eq"    onclick="equal()"> = </button>
+        </div>
+    </div>
+</body>
+<script type="text/javascript">    
+
+    var sign_eq = false; //按过等号的标志
+    var arrVal = [];       //保存历史input.value
+
+    var input = document.getElementById("in");
+    var ans = document.getElementById("ans"); //保存计算结果
+    var ansFlag = false;
+
+    function show(id){
+        //如果按完等号又要算数，则不重置 input value
+        if(sign_eq && id=="add" || id=="min" || id=="mul" || id=="divi" || id=="mo" ){
+            sign_eq = false;
+        }
+        //按完等号 并且按的不是算数，则重置input value
+        if(sign_eq && id!="add" && id!="min" && id!="mul" && id!="divi" && id!="mo" ){
+            input.value = "";
+            arrVal = [];
+            sign_eq = false;
+        }
+        input.value += document.getElementById(id).value;
+        arrVal.push(input.value);
+    }
+    function clears(){
+        input.value = "";
+    }
+    function clearss(){ //CE功能：返回上一步操作       
+        if(arrVal.length >1 ){
+            arrVal.pop();
+            input.value = arrVal[arrVal.length-1];
+        }else{
+            arrVal = [];
+            input.value = "";
+        }
+    }
+    function equal(){
+        var str = input.value;
+        var arr = [];
+
+        input.value = eval(input.value);  //计算结果
+        ans = input.value;
+        ansFlag = true;  //按过等号了，就可以放心地用ans变量了
+        sign_eq = true;
+    }
+    function getAns(){
+        if(ansFlag){  //按过等号了，就可以放心地用ans变量了
+            input.value += ans;
+        }
+    }
+</script>
+</html>

@@ -3,24 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <script type="text/javascript"src="jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="vue.js"></script>
     <title>Wikipedia Viewer</title>
+    <style type="text/css">
+        *{
+            text-align: center;
+        }
+        body{
+            background: black;
+        }
+        #main{
+            position: absolute;
+            width: 500px;
+            top       : 20%;
+            left      : 50%;
+            transform : translate(-50%,-50%);
+        }
+        a{
+            font-size: 30pt;
+            color: #aff;
+            font-family: arial;
+            text-align: left;
+            text-decoration:none;
+        }
+        a:hover {
+            color: #acc;
+        }
+        input{
+            width: 300px;
+            min-height: 40px;
+            border-radius: 50px;
+            border:#fff;
+            margin:20px;
+            background: black;
+            font-size:1.5em;
+            font-family:arial;
+            color: white;
+        }
+        #response{
+            position: absolute;
+            top       : 80%;
+        }
+        .info{
+            width: 500px;
+            padding: 20px 30px;
+            border: solid 2px #3af;
+            margin-top:15px;
+            border-radius: 20px;
+            color: white;
+            user-select:none;
+        }
+        .info:hover{
+            background-color: #111;
+            cursor:pointer;
+        }
+        .searchmatch{
+            margin:3px;
+            font-size:1.1em;
+            color:#f33;
+        }
+    </style>
 </head>
 <body>
-    <a href="http://en.wikipedia.org/wiki/Special:Random"target="_blank">随机条目</a>
+    <div id="main">
+        <div><a href="http://en.wikipedia.org/wiki/Special:Random"target="_blank">获取随机条目</a></div>
+        <input  placeholder="在此输入想查询的内容" v-on:keyup.enter="search" v-model="want">
+        <div id="response">
+            <div class="info" v-for="item in items" v-html="item.snippet" v-on:click="open(item.title)"> </div>
+        </div>
+    </div>
 </body>
 <script type="text/javascript">
+    var vm = new Vue({
+        el:"#main",
+        data:{
+            want: "",
+            items: [],
+        },
+        methods:{
+            search:function(){  //搜索
+                var vm = this;
+                $.ajax({
+                    url: 'https://en.wikipedia.org/w/api.php',
+                    data: { action: 'query', list: 'search', srsearch: vm.want, format: 'json' },
+                    dataType: 'jsonp',
+                    success: function (data) {
+                        vm.items = data.query.search;
+                    }
+                }); 
+            },
+            open:function(title){  //打开搜索结果
+                var url="https://en.wikipedia.org/wiki/" + title;  //注：此url加上title就是维基返回给我们的页面
+                window.open(url); 
+            }
+        }
 
-    /*
-    var url = 'http://en.wikipedia.org/wiki/Special:Random';
-    $.ajax(url, {    
-        dataType: 'jsonp',  
-        crossDomain: true,  
-        success: function(data) {  
-            if(data && data.resultcode == '200'){  
-                console.log(data);
-            }  
-        }  
-    });  
-    */
+    })
+    
 </script>
 </html>

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="https://cdn.staticfile.org/vue/2.0.5/vue.min.js"></script>
+    <title>Tic Tac Toe Game</title>
+    <style type="text/css">
+        #main{
+            position: absolute;
+            width: 612px;
+            height: 612px;
+            background-color: #aa5;
+            margin-left: 30%;
+        }
+        .block{
+            position: relative;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            background-color: black;
+            margin-right: 4px;
+        }
+        .block:hover{
+            background-color: #333;
+        }
+        .oo{
+            position: absolute;
+            float: left;
+            width: 180px; 
+            height: 180px;
+            border-radius: 50%;
+            background: black;
+            border:7px solid #36a;
+        }
+        .xx{
+            position: absolute;
+            top:90px;
+            left:10px;
+            width:180px;
+            height:7px;
+            background:#aaa;
+            font-size:0;
+            line-height:0;
+            vertical-align:middle;
+           -webkit-transform: rotate(45deg);
+        }
+        .xx:after { 
+            content:'.';
+            display:block;
+            width:180px;
+            height:7px;
+            background:#aaa;
+            -webkit-transform: rotate(-90deg);
+        }
+        span{
+            font-size:2em;
+        }
+        button{
+            width: 50px;
+            height: 50px;
+            font-size:1.5em;
+            border-radius: 50%;
+            background-color: #111;
+            color: white;
+        }
+        button:hover{
+            background-color: #555;
+        }
+        #btnRestart{
+            width: 150px;
+            height: 50px;
+            border-radius: 10%;
+        }
+    </style>
+</head>
+<body>
+    <div id="main">
+        <div v-bind:id="item.id"  v-on:click="put(item)" class="block" v-for="item in items">  
+            <div v-bind:class="item.chessStyle"  v-show="item.putFlag"></div>
+        </div>
+        <span v-text="instruct"></span>
+        <button  v-on:click="init" v-if="startFlag">O</button>
+        <button  v-on:click="init" v-if="startFlag">X</button>
+        <button  id="btnRestart" v-on:click="restart" v-if="restartFlag">再来一盘!</button>
+    </div>
+</body>
+<script type="text/javascript">
+
+    var vm = new Vue({
+        el:"#main",
+        
+        data:{
+            instruct: "请问您选O还是X？",  //游戏导语
+            chessFlag: true,     //玩家选择的棋子标志：true放 O, false放 X
+            startFlag: true,    //游戏开始前标志（开始前显示button,开始后隐去)
+            line2FlagPlayer:  false,   //玩家二连标志
+            line2FlagRobot:  false,    //电脑二连标志
+            putCount:  0,       //棋盘棋子数量
+            restartFlag: false,  //游戏重置标志
+
+            items: [
+                {id:0, chessStyle:"oo", putFlag:false}, //chessStyle表示棋子样式，为"oo"则放 O，false放 X
+                {id:1, chessStyle:"oo", putFlag:false}, // putFlag则决定 放或没放
+                {id:2, chessStyle:"oo", putFlag:false},
+                {id:3, chessStyle:"oo", putFlag:false},
+                {id:4, chessStyle:"oo", putFlag:false},
+                {id:5, chessStyle:"oo", putFlag:false},
+                {id:6, chessStyle:"oo", putFlag:false},
+                {id:7, chessStyle:"oo", putFlag:false},
+                {id:8, chessStyle:"oo", putFlag:false}
+             ]      
+        },
+        methods:{
+            put:function(item){   //玩家落子（电脑跟子）
+                
+                if(this.restartFlag){  //游戏已重置，则点击棋盘无效
+                    this.instruct = "已经结束了！别点了！";
+                }else{
+                    if(!this.startFlag){    //游戏开始
+
+                        //必须点击一个没放过棋子的位置才生效
+                        if(!item.putFlag){
+
+                            this.instruct = "下的漂亮！";
+
+                            /***************************   玩家先下子    *************************/
+
+                            if(!this.chessFlag){  //玩家选择的为X
+                                item.chessStyle = "xx";
+                            }
+                            item.putFlag = true;         //放置棋子
+                            this.putCount ++;            //棋盘上的棋子个数 +1
+                            
+                            if( this.overOfLine3(this.chessFlag) ){ //判断玩家是否三连
+                                return; //三连的话直接结束，避免电脑再下
+                            }
+
+                            /***************************   电脑再下子    *************************/
+                            if(this.putCount !== 9){   //下满了电脑就不下了
+
+                                /*电脑下子*/
+
+                                //先判断一下自己有没有二连，有的话完成二连
+
+                                //存放所有电脑已下过的棋子
+                                var arrExist = [];  
+                                for(var i=0; i<this.items.length; i++){
+
+                                    if( this.items[i].putFlag ){
+
+                                        if(this.chessFlag && this.items[i].chessStyle === "oo" ||   //玩家为O
+                                          !this.chessFlag && this.items[i].chessStyle === "xx" ){   //玩家为X
+                                            
+                                            //这个item是玩家，因此啥都不干
+                                        }else{
+                                            //不是玩家，就push
+                                            arrExist.push(this.items[i]);
+                                        }
+                                    }
+                                }
+                                for(var i=0; i<arrExist.length; i++){
+                                    //line2里干的事：判断二连并下子。（因此判断三连的事情还要另加）
+                                    if(this.line2(arrExist[i])){   
+                                        this.overOfLine3(!this.chessFlag);
+                                        return true;    //结束直接return，避免进入下面的分支
+                                    }
+
+                                }
+
+
+                                //没有的话先判断一下玩家有没有二连
+                                if(this.line2(item)){
+
+                                    //二连的事全在函数里干了，这里啥都不用干~
+
+                                }else{   //没有二连则照自己的来
+
+                                    if(item.id !== 4 && !this.items[4].putFlag){  //电脑智能1：如果玩家第一手没下中间，咱下
+                                        if(this.chessFlag){
+                                            this.items[4].chessStyle = "xx";
+                                        }else{
+                                            this.items[4].chessStyle = "oo";
+                                        }
+                                        this.items[4].putFlag = true;   //放置棋子
+                                        this.putCount ++;
+
+                                    }else{ //中间下过了的下法
+                                        
+
+                                        while(1){
+                                            //电脑智能2：如果玩家第一手下中间，就下四个角
+                                            if(this.putCount === 1 && item.id ===4 ){
+
+                                                //得到四个角的 item组成的数组
+                                                var arrCorner = []; 
+                                                for(var i=0; i<this.items.length; i++){
+                                                    if( this.items[i].id === 0 || this.items[i].id === 2 ||
+                                                        this.items[i].id === 6 || this.items[i].id === 8 ){
+
+                                                        arrCorner.push(this.items[i]);  //把四个角压入数组
+                                                    }
+                                                    
+                                                }
+                                                var index1 = Math.floor(Math.random()*4);//得到要下的下标
+                                                var itemRobot1 = arrCorner[index1];      
+
+                                                if(!itemRobot1.putFlag){  //如果该位置没放过，则放一下
+
+                                                    if(this.chessFlag){ //玩家选择的为O，则robot为X
+                                                        itemRobot1.chessStyle = "xx";
+                                                    }else{
+                                                        itemRobot1.chessStyle = "oo";
+                                                    }
+                                                    itemRobot1.putFlag = true;   //放置棋子
+                                                    this.putCount ++;
+                                                    break;
+                                                }
+
+                                            }else{  //除了第一手下中间的情况，其他都随机放置
+                                                var index2 = Math.floor(Math.random()*9);//得到要下的下标
+                                                var itemRobot2 = this.items[index2];      
+
+                                                if(!itemRobot2.putFlag){  //如果该位置没放过，则放一下
+
+                                                    if(this.chessFlag){ //玩家选择的为O，则robot为X
+                                                        itemRobot2.chessStyle = "xx";
+                                                    }else{
+                                                        itemRobot2.chessStyle = "oo";
+                                                    }
+                                                    itemRobot2.putFlag = true;   //放置棋子
+                                                    this.putCount ++;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                this.overOfLine3(!this.chessFlag); //判断电脑是否三连，三连结束
+
+                            }else{ //下满了，先判一下是否三连，不是就平局并重新开始
+                                
+                                if(false === this.overOfLine3(this.chessFlag)){   //没有三连，游戏结束
+                                    
+                                    this.instruct = "游戏结束：平局 ";
+                                    this.restartFlag = true;                            
+                                }
+                                //三连了游戏自动结束，不用自己再干什么
+                            }
+                            //判断玩家是否三连，三连结束
+                            this.overOfLine3(this.chessFlag);
+                        }else{
+                            this.instruct="该位置已下过！";
+                        }
+                    }else{
+                        alert("请先选择棋子！");
+                    }
+                }
+            },
+            //计算机判断二连，并下子。没有二连不下
+            line2:function(item){
+
+                var id = item.id;  //传入棋子的id
+                var flag = this.chessFlag;
+                //保存 9个棋盘格子
+                var arr = []; 
+                for(var i=0; i<this.items.length; i++){
+                    arr.push(this.items[i]);
+                }
+
+                /*  判断上下左右及斜边有无相同棋子  */
+
+                //左上
+                if( arr[id-4] && arr[id-4].putFlag && arr[id-4].chessStyle === item.chessStyle ){
+                    //判断有没有堵上(此处左上相同，我们先判断一下传入id的位置，再决定堵那里)
+
+                    //id为4为棋盘正中间，因此左上(id-4)的位置相同时，我们往右下(id+4)堵
+                    if( id === 4 ){
+                        //不用判断chessFlag了，因为如果二连的情况下，chessFlag还和玩家一样的话，早三连GG了
+                        if( !arr[id+4].putFlag ){  //没堵上，则堵上
+
+                            if(flag){
+                                arr[id+4].chessStyle = "xx";
+                            }else{
+                                arr[id+4].chessStyle = "oo";
+                            }
+
+                            arr[id+4].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                        //堵上的情况啥都不用干，继续走下一个if
+                    }else if( id === 8 ){ 
+                        //id为8，则堵id为0的位置
+                        if( !arr[id-8].putFlag ){  
+
+                            if(flag){
+                                arr[id-8].chessStyle = "xx";
+                            }else{
+                                arr[id-8].chessStyle = "oo";
+                            }
+
+                            arr[id-8].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+
+                    }
+                }
+                //上
+                if( arr[id-3] && arr[id-3].putFlag && arr[id-3].chessStyle === item.chessStyle ){
+
+                    if( id<=5 ){  //表示在中间一排,要堵最下一排；否则就是最下一排，要堵最上一排（因为最上一排不可能进这个分支）
+
+                        if( !arr[id+3].putFlag ){ 
+
+                            if(flag){
+                                arr[id+3].chessStyle = "xx";
+                            }else{
+                                arr[id+3].chessStyle = "oo";
+                            }
+
+                            arr[id+3].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }else{    //不是中间一排，就是最下排
+                        if( !arr[id-6].putFlag ){ 
+
+                            if(flag){
+                                arr[id-6].chessStyle = "xx";
+                            }else{
+                                arr[id-6].chessStyle = "oo";
+                            }
+
+                            arr[id-6].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //右上（id在左边两列时） 或 左边的左边（id在右列时）
+                if( arr[id-2] && arr[id-2].putFlag && arr[id-2].chessStyle === item.chessStyle ){
+
+                    if( id !==2 && id !==5 && id !==8 ){
+                        if( id === 4 ){
+                            
+                            if( !arr[id+2].putFlag ){ 
+
+                                if(flag){
+                                    arr[id+2].chessStyle = "xx";
+                                }else{
+                                    arr[id+2].chessStyle = "oo";
+                                }
+
+                                arr[id+2].putFlag = true;
+                                this.putCount ++;  
+                                return true;
+                            }
+                           
+                        }else if( id === 6 ){ 
+                            
+                            if( !arr[id-4].putFlag ){  
+
+                                if(flag){
+                                    arr[id-4].chessStyle = "xx";
+                                }else{
+                                    arr[id-4].chessStyle = "oo";
+                                }
+
+                                arr[id-4].putFlag = true;
+                                this.putCount ++;  
+                                return true;
+                            }
+                        }
+                    }else{
+                        if( !arr[id-1].putFlag ){ 
+
+                            if(flag){
+                                arr[id-1].chessStyle = "xx";
+                            }else{
+                                arr[id-1].chessStyle = "oo";
+                            }
+
+                            arr[id-1].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //左
+                if( ( arr[id-1] && arr[id-1].putFlag && arr[id-1].chessStyle === item.chessStyle ) &&
+                    ( id !==0 && id!==3 && id!==6 ) ){
+
+                     if( id===1 || id===4 || id===7 ){  //中间一列，堵最右列
+
+                        if( !arr[id+1].putFlag ){ 
+
+                            if(flag){
+                                arr[id+1].chessStyle = "xx";
+                            }else{
+                                arr[id+1].chessStyle = "oo";
+                            }
+
+                            arr[id+1].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }else{     //最右列，堵最左列 
+                        if( !arr[id-2].putFlag ){ 
+
+                            if(flag){
+                                arr[id-2].chessStyle = "xx";
+                            }else{
+                                arr[id-2].chessStyle = "oo";
+                            }
+
+                            arr[id-2].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //右
+                if( (arr[id+1] && arr[id+1].putFlag && arr[id+1].chessStyle === item.chessStyle) &&
+                    ( id !==2 && id!==5 && id!==8 ) ){
+
+                    if( id===1 || id===4 || id===7 ){  //中间一列，堵最左列
+
+                        if( !arr[id-1].putFlag ){ 
+
+                            if(flag){
+                                arr[id-1].chessStyle = "xx";
+                            }else{
+                                arr[id-1].chessStyle = "oo";
+                            }
+
+                            arr[id-1].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }else{     //最左列，堵最右列 
+                        if( !arr[id+2].putFlag ){ 
+
+                            if(flag){
+                                arr[id+2].chessStyle = "xx";
+                            }else{
+                                arr[id+2].chessStyle = "oo";
+                            }
+
+                            arr[id+2].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //左下
+                if( arr[id+2] && arr[id+2].putFlag && arr[id+2].chessStyle === item.chessStyle ){
+
+                    if( id !==0 && id !==3 && id !==6 ){
+                        if( id === 4 ){
+                            
+                            if( !arr[id-2].putFlag ){ 
+
+                                if(flag){
+                                    arr[id-2].chessStyle = "xx";
+                                }else{
+                                    arr[id-2].chessStyle = "oo";
+                                }
+
+                                arr[id-2].putFlag = true;
+                                this.putCount ++;  
+                                return true;
+                            }
+                           
+                        }else if( id === 2 ){ 
+                            
+                            if( !arr[id+4].putFlag ){  
+
+                                if(flag){
+                                    arr[id+4].chessStyle = "xx";
+                                }else{
+                                    arr[id+4].chessStyle = "oo";
+                                }
+
+                                arr[id+4].putFlag = true;
+                                this.putCount ++;  
+                                return true;
+                            }
+                        }
+                    }else{
+                        if( !arr[id+1].putFlag ){ 
+
+                            if(flag){
+                                arr[id+1].chessStyle = "xx";
+                            }else{
+                                arr[id+1].chessStyle = "oo";
+                            }
+
+                            arr[id+1].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //下
+                if( arr[id+3] && arr[id+3].putFlag && arr[id+3].chessStyle === item.chessStyle ){
+
+                    if( id>=3 ){  //中间排
+
+                        if( !arr[id-3].putFlag ){ 
+
+                            if(flag){
+                                arr[id-3].chessStyle = "xx";
+                            }else{
+                                arr[id-3].chessStyle = "oo";
+                            }
+
+                            arr[id-3].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }else{    //不是中间一排，就是最上排
+                        if( !arr[id+6].putFlag ){ 
+
+                            if(flag){
+                                arr[id+6].chessStyle = "xx";
+                            }else{
+                                arr[id+6].chessStyle = "oo";
+                            }
+
+                            arr[id+6].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                    }
+                }
+                //右下
+                if( arr[id+4] && arr[id+4].putFlag && arr[id+4].chessStyle === item.chessStyle ){
+
+                    if( id === 4 ){
+                        
+                        if( !arr[id-4].putFlag ){ 
+
+                            if(flag){
+                                arr[id-4].chessStyle = "xx";
+                            }else{
+                                arr[id-4].chessStyle = "oo";
+                            }
+
+                            arr[id-4].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+                       
+                    }else if( id === 0 ){ 
+                        
+                        if( !arr[id+8].putFlag ){  
+
+                            if(flag){
+                                arr[id+8].chessStyle = "xx";
+                            }else{
+                                arr[id+8].chessStyle = "oo";
+                            }
+
+                            arr[id+8].putFlag = true;
+                            this.putCount ++;  
+                            return true;
+                        }
+
+                    }
+                }
+                //下下
+                if( id<=2 && arr[id+6].putFlag && arr[id+6].chessStyle === item.chessStyle ){
+                    
+                    if( !arr[id+3].putFlag ){  
+
+                        if(flag){
+                            arr[id+3].chessStyle = "xx";
+                        }else{
+                            arr[id+3].chessStyle = "oo";
+                        }
+
+                        arr[id+3].putFlag = true;
+                        this.putCount ++;  
+                        return true;
+                    }
+                }
+                //上上
+                if( id>=6 && arr[id-6].putFlag && arr[id-6].chessStyle === item.chessStyle ){
+                    
+                    if( !arr[id-3].putFlag ){  
+
+                        if(flag){
+                            arr[id-3].chessStyle = "xx";
+                        }else{
+                            arr[id-3].chessStyle = "oo";
+                        }
+
+                        arr[id-3].putFlag = true;
+                        this.putCount ++;  
+                        return true;
+                    }
+                }
+                /* 四个角的隔子二连，就堵中间这个不用判断了，因为第一手就先抢中间 */
+
+                //没有二连的情况则return false
+                return false;   
+            },
+            //是否三连,三连结束游戏
+            overOfLine3:function(chessFlag){  //传入当前放置的棋子样式    
+                
+                //根据传入的棋子标志，得到棋子类型。从而区别现在判断的是玩家还是AI
+                var chessStyle = "";
+                if(chessFlag){
+                    chessStyle = "oo";
+                }else{
+                    chessStyle = "xx";
+                }
+                //保存 9个棋盘格子
+                var arr = []; 
+                for(var i=0; i<this.items.length; i++){
+                    arr.push(this.items[i]);
+                    
+                }
+                //判断所有三连的情况是否存在（八种情况）
+                    //第一行 三连
+                if( ( (arr[0].putFlag && arr[1].putFlag && arr[2].putFlag) &&
+                        (arr[0].chessStyle === chessStyle && 
+                         arr[1].chessStyle === chessStyle && arr[2].chessStyle === chessStyle) ) ||
+                    //第二行 三连
+                    ( (arr[3].putFlag && arr[4].putFlag && arr[5].putFlag) &&
+                        (arr[3].chessStyle === chessStyle && 
+                         arr[4].chessStyle === chessStyle && arr[5].chessStyle === chessStyle) ) ||
+                    //第三行 三连
+                    ( (arr[6].putFlag && arr[7].putFlag && arr[8].putFlag) &&
+                        (arr[6].chessStyle === chessStyle && 
+                         arr[7].chessStyle === chessStyle && arr[8].chessStyle === chessStyle) ) ||
+                    //第一列 三连
+                    ( (arr[0].putFlag && arr[3].putFlag && arr[6].putFlag) &&
+                        (arr[0].chessStyle === chessStyle && 
+                         arr[3].chessStyle === chessStyle && arr[6].chessStyle === chessStyle) ) ||
+                    //第二列 三连
+                    ( (arr[1].putFlag && arr[4].putFlag && arr[7].putFlag) &&
+                        (arr[1].chessStyle === chessStyle && 
+                         arr[4].chessStyle === chessStyle && arr[7].chessStyle === chessStyle) ) ||
+                    //第三列 三连
+                    ( (arr[2].putFlag && arr[5].putFlag && arr[8].putFlag) &&
+                        (arr[2].chessStyle === chessStyle && 
+                         arr[5].chessStyle === chessStyle && arr[8].chessStyle === chessStyle) ) ||
+                    //左斜 三连
+                    ( (arr[0].putFlag && arr[4].putFlag && arr[8].putFlag) &&
+                        (arr[0].chessStyle === chessStyle && 
+                         arr[4].chessStyle === chessStyle && arr[8].chessStyle === chessStyle) ) ||
+                    //右斜 三连
+                    ( (arr[2].putFlag && arr[4].putFlag && arr[6].putFlag) &&
+                        (arr[2].chessStyle === chessStyle && 
+                         arr[4].chessStyle === chessStyle && arr[6].chessStyle === chessStyle) ) )
+
+                {
+                    //判断是玩家还是电脑赢了
+                    if(this.chessFlag && chessStyle === "oo" ||   //玩家为O
+                        !this.chessFlag && chessStyle === "xx" )  //玩家为X
+                    {  
+                        this.instruct = "游戏结束：您赢了！ ";
+                        this.restartFlag = true;
+                        return true;
+                    }else{
+                        this.instruct = "游戏结束：您输了！ ";
+                        this.restartFlag = true;
+                        return true;
+                    }   
+                }
+                return false;   //无三连返回false
+            },
+            //游戏初始化
+            init:function(){  
+                var flag = event.srcElement.innerHTML; //哪个button被点击
+
+                //判断玩家选择的是 O 还是 X
+                if(flag === 'X'){
+                    this.chessFlag = false;
+
+                    this.instruct = "选X成功!";
+
+                }else if(flag === 'O'){
+                    this.instruct = "选O成功!";
+                }
+
+                //游戏开始后，隐去button
+                this.startFlag = false;
+            },
+
+            //游戏结束，重新开始
+            restart:function(){
+                for(var i=0; i<this.items.length; i++){
+                    this.items[i].putFlag = false;    //清空棋盘的棋子
+                    this.items[i].chessStyle = "oo";  //重置棋子，默认为oo
+                }
+                this.instruct = "请问您选O还是X？"; //重置导语
+                this.chessFlag = true;    //重置玩家选择的棋子标志
+                this.startFlag = true;    //重置游戏开始前标志
+                this.putCount  = 0;        //重置已放置个数
+                this.restartFlag = false  //重置 游戏重置标志
+            }
+
+        }
+    })
+
+/*  2016.11.11  16:20
+    小结：   
+            此程序写了三天。
+        第一天完成了视图界面和基本的游戏功能。第二天，第三天一直在增加AI的逻辑。
+        一开始想，三连的情况一共八种，二连的情况一共28种，全部枚举形式来判断。
+        后来觉得太无脑，且效率可能不高，于是二连用另外一种思路：
+            玩家每下一步，电脑就去判断他下的这一步和四周的棋子是否存在二连，存
+            在就给他堵上。
+        后来就朝着这个的思路一直写，一直改BUG，一直加逻辑，最后越写越庞大。。我
+        怀疑还不如用枚举来写呢。。
+        现在还有一些逻辑需要增加，但是发现工程量很大。。已无力回头。。
+        因此，这个傻瓜AI就这样吧。。
+        最后，目前唯一的硬伤就是：
+            “自己二连的时候不能发现并完成三连”
+
+     2016.11.11  17:34    
+        更新：我灵机一动，硬伤已修复！可正常游戏。
+*/
+</script>
+</html>
